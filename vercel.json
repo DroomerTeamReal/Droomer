@@ -14,6 +14,10 @@
     {
       "source": "/Sigma",
       "destination": "/Droomer.gif"
+    },
+    {
+      "source": "/Rat",
+      "destination": "https://getrat.vercel.app"
     }
   ]
 }
