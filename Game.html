@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Droomer Game</title>
+  <style>
+    body { background: #141414; color: white; font-family: sans-serif; text-align: center; }
+    #gameCanvas { background: #222; margin-top: 20px; border: 2px solid #444; }
+  </style>
+</head>
+<body>
+  <h1>Droomer Click Game</h1>
+  <p>Click the square as fast as you can!</p>
+  <canvas id="gameCanvas" width="300" height="300"></canvas>
+  <p id="score">Score: 0</p>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    let score = 0;
+    let square = { x: 100, y: 100, size: 50 };
+
+    function drawSquare() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "lime";
+      ctx.fillRect(square.x, square.y, square.size, square.size);
+    }
+
+    function randomizeSquare() {
+      square.x = Math.random() * (canvas.width - square.size);
+      square.y = Math.random() * (canvas.height - square.size);
+    }
+
+    canvas.addEventListener("click", function(e) {
+      const rect = canvas.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+      if (
+        mouseX >= square.x && mouseX <= square.x + square.size &&
+        mouseY >= square.y && mouseY <= square.y + square.size
+      ) {
+        score++;
+        document.getElementById("score").textContent = "Score: " + score;
+        randomizeSquare();
+        drawSquare();
+      }
+    });
+
+    drawSquare();
+  </script>
+</body>
+</html>
