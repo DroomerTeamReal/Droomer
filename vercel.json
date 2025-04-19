@@ -1,11 +1,6 @@
 {
   "redirects": [
     {
-      "source": "/",
-      "destination": "https://droomer.lol",
-      "permanent": true
-    },
-    {
       "source": "/Droomer.rar",
       "destination": "https://files.catbox.moe/rc2db9.rar",
       "permanent": true
