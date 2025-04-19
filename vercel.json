@@ -8,6 +8,10 @@
   ],
   "rewrites": [
     {
+      "source": "/",
+      "destination": "https://droomer.lol"
+    },
+    {
       "source": "/Game",
       "destination": "/Game.html"
     },
