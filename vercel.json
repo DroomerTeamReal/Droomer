@@ -10,9 +10,7 @@
     {
       "source": "/Game",
       "destination": "/Game.html"
-    }
-  ],
-  "rewrites": [
+    },
     {
       "source": "/Sigma",
       "destination": "/Droomer.gif"
