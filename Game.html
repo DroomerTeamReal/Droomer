@@ -3,15 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Droomer Game Hub</title>
+  <title>Droomer Click Simulator</title>
   <style>
     body { background: #141414; color: white; font-family: sans-serif; margin: 0; }
     .tabs { display: flex; background: #1f1f1f; }
     .tab { flex: 1; padding: 15px; cursor: pointer; text-align: center; background: #1f1f1f; border-bottom: 2px solid #444; }
     .tab.active { background: #2a2a2a; border-bottom: 2px solid lime; }
-    .content { display: none; padding: 20px; }
-    .content.active { display: block; }
-    canvas { background: #222; border: 2px solid #444; }
+    .content { padding: 20px; }
     .shop-item {
       margin-top: 10px;
       padding: 10px;
@@ -19,176 +17,72 @@
       cursor: pointer;
       border: 1px solid #555;
     }
+    .moon {
+      position: absolute;
+      pointer-events: none;
+      z-index: 10;
+      animation: flyToMoon 10s linear infinite alternate;
+    }
+    @keyframes flyToMoon {
+      0% { top: 200px; left: 50%; transform: translateX(-50%) scale(0.5); }
+      100% { top: 0px; left: 50%; transform: translateX(-50%) scale(1); }
+    }
   </style>
 </head>
 <body>
-
   <div class="tabs">
-    <div class="tab active" onclick="switchTab('clickGame')">Spawn Click Game</div>
-    <div class="tab" onclick="switchTab('clickSim')">Click Simulator</div>
+    <div class="tab active">Click Simulator</div>
   </div>
 
-  <!-- Click Game -->
-  <div id="clickGame" class="content active">
-    <h2>Spawn Click Game</h2>
-    <p>Click the square as fast as you can!</p>
-    <canvas id="gameCanvas" width="300" height="300"></canvas>
-    <p id="score">Score: 0</p>
-    <div class="shop-item" onclick="buyMoreSquares()">Buy More Squares (Cost: 30)</div>
-  </div>
-
-  <!-- Click Simulator -->
   <div id="clickSim" class="content">
     <h2>Click Simulator</h2>
     <p>Click the cookie to earn points and buy upgrades!</p>
-    <img src="https://img.freepik.com/free-psd/delicious-stack-chocolate-chip-cookies-sweet-treat-bakery-food_632498-50882.jpg?t=st=1745061216~exp=1745064816~hmac=97938fff2fd3c702c23c6bec58e95f3dc4e1f7290cdaa7255b737be99a9b95d3&w=826"
-         width="200" id="cookie" style="cursor: pointer; border-radius: 10px;" />
+    <img src="https://img.freepik.com/free-psd/delicious-stack-chocolate-chip-cookies-sweet-treat-bakery-food_632498-50882.jpg" width="200" id="cookie" style="cursor: pointer; border-radius: 10px;" />
     <p id="simScore">Score: 0</p>
-    <div class="shop-item" onclick="buyAutoClicker()">Buy Auto Clicker (50)</div>
-    <div class="shop-item" onclick="buyGrandma()">Buy Grandma (Cost: 100)</div>
-    <div class="shop-item" onclick="buyClickMultiplier()">Buy Click Multiplier (Cost: 200)</div>
-  </div>
-
-  <!-- Save/Load Section -->
-  <div style="padding: 20px;">
-    <h3>Save / Load Game</h3>
-    <button onclick="saveGame()">💾 Save Game (.droomer)</button>
-    <input type="file" accept=".droomer" onchange="loadGame(event)">
+    <p id="rebirthCount">Rebirths: 0</p>
+    <div id="stats"></div>
+    <div class="shop-item" onclick="buyItem('rocket', 500, 100, 1000)">🚀 Buy Rocket (Cost: <span id="price_rocket">500</span>)</div>
+    <div class="shop-item" onclick="buyItem('noob', 9999999999999999999999999999999999999, 99999999999, 0.00000000000000000000000001)">Buy Noob (Cost: <span id="price_noob">9999999999999999999999999999999999999</span>)</div>
+    <div class="shop-item" onclick="buyItem('sigma', 100000, 999, 100)">Buy Sigma (Cost: <span id="price_sigma">100000</span>)</div>
+    <div class="shop-item" onclick="buyItem('human', 1000, 500, 10000)">Buy Human (Cost: <span id="price_human">1000</span>)</div>
+    <div class="shop-item" onclick="buyItem('grandma', 100, 5, 1000)">Buy Grandma (Cost: <span id="price_grandma">100</span>)</div>
+    <div class="shop-item" onclick="buyItem('autoClicker', 50, 1, 1000)">Buy Auto Clicker (Cost: <span id="price_autoClicker">50</span>)</div>
+    <div class="shop-item" onclick="buyItem('clickMultiplier', 200, 2, 0, true)">Buy Click Multiplier (Cost: <span id="price_clickMultiplier">200</span>)</div>
+    <div class="shop-item" onclick="buyMoon()">Buy Moon (Cost: <span id="price_moon">10000</span>)</div>
+    <div class="shop-item" onclick="rebirth()">🔥 Rebirth (Cost: 1e150)</div>
   </div>
 
   <script>
-    // Morse Code Conversion
-    const morse = {
-      "0": "-----", "1": ".----", "2": "..---", "3": "...--", "4": "....-",
-      "5": ".....", "6": "-....", "7": "--...", "8": "---..", "9": "----."
-    };
-    const reverseMorse = Object.fromEntries(Object.entries(morse).map(([k, v]) => [v, k]));
-
-    function toMorse(num) {
-      return String(num).split('').map(d => morse[d] || '').join(' ');
-    }
-
-    function fromMorse(morseStr) {
-      return morseStr.trim().split(' ').map(m => reverseMorse[m] || '').join('');
-    }
-
-    function saveGame() {
-      const data = [
-        `!=")!${toMorse(score)}!=")!`,
-        `!=")!${toMorse(simScore)}!=")!`,
-        `!=")!${toMorse(autoClickers)}!=")!`,
-        `!=")!${toMorse(grandmas)}!=")!`,
-        `!=")!${toMorse(clickMultiplier)}!=")!`
-      ].join('\n');
-
-      const blob = new Blob([data], { type: "text/plain" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "DroomerSave.droomer";
-      a.click();
-    }
-
-    function loadGame(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const content = e.target.result;
-        const lines = content.trim().split('\n').map(line =>
-          line.replace(/!="\)!/g, "").trim()
-        );
-
-        try {
-          score = parseInt(fromMorse(lines[0])) || 0;
-          simScore = parseInt(fromMorse(lines[1])) || 0;
-          autoClickers = parseInt(fromMorse(lines[2])) || 0;
-          grandmas = parseInt(fromMorse(lines[3])) || 0;
-          clickMultiplier = parseInt(fromMorse(lines[4])) || 1;
-
-          document.getElementById("score").textContent = "Score: " + score;
-          updateSimScore();
-
-          alert("Game loaded successfully!");
-        } catch {
-          alert("Failed to load game. File may be corrupted.");
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    // Tab System
-    function switchTab(tabId) {
-      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
-      document.querySelectorAll(".content").forEach(content => content.classList.remove("active"));
-      document.getElementById(tabId).classList.add("active");
-      event.target.classList.add("active");
-    }
-
-    // --- Spawn Click Game ---
-    const canvas = document.getElementById("gameCanvas");
-    const ctx = canvas.getContext("2d");
-    let score = 0;
-    let squares = [{ x: 100, y: 100, size: 50 }];
-    let squareCount = 1;
-
-    function drawSquares() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "lime";
-      for (let square of squares) {
-        ctx.fillRect(square.x, square.y, square.size, square.size);
-      }
-    }
-
-    function randomizeSquares() {
-      for (let square of squares) {
-        square.x = Math.random() * (canvas.width - square.size);
-        square.y = Math.random() * (canvas.height - square.size);
-      }
-    }
-
-    canvas.addEventListener("click", function(e) {
-      const rect = canvas.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-
-      for (let i = 0; i < squares.length; i++) {
-        const sq = squares[i];
-        if (
-          mouseX >= sq.x && mouseX <= sq.x + sq.size &&
-          mouseY >= sq.y && mouseY <= sq.y + sq.size
-        ) {
-          score++;
-          document.getElementById("score").textContent = "Score: " + score;
-          randomizeSquares();
-          drawSquares();
-          break;
-        }
-      }
-    });
-
-    function buyMoreSquares() {
-      if (score >= 30) {
-        score -= 30;
-        squares.push({ x: 50, y: 50, size: 50 });
-        squareCount++;
-        alert("You now have " + squareCount + " squares!");
-        drawSquares();
-        document.getElementById("score").textContent = "Score: " + score;
-      } else {
-        alert("Not enough score!");
-      }
-    }
-
-    drawSquares();
-
-    // --- Click Simulator ---
-    let simScore = 0;
-    let autoClickers = 0;
-    let grandmas = 0;
-    let clickMultiplier = 1;
     const simScoreDisplay = document.getElementById("simScore");
+    const rebirthDisplay = document.getElementById("rebirthCount");
+    const statsDisplay = document.getElementById("stats");
     const cookie = document.getElementById("cookie");
+
+    let simScore = 0;
+    let clickMultiplier = 1;
+    let rebirths = 0;
+    let moonCount = 0;
+
+    let itemCounts = {
+      autoClicker: 0,
+      grandma: 0,
+      clickMultiplier: 0,
+      human: 0,
+      sigma: 0,
+      noob: 0,
+      rocket: 0
+    };
+
+    let itemPrices = {
+      autoClicker: 50,
+      grandma: 100,
+      clickMultiplier: 200,
+      human: 1000,
+      sigma: 100000,
+      noob: 9999999999999999999999999999999999999,
+      rocket: 500,
+      moon: 10000
+    };
 
     cookie.onclick = () => {
       simScore += clickMultiplier;
@@ -199,46 +93,127 @@
       simScoreDisplay.textContent = "Score: " + simScore;
     }
 
-    function buyAutoClicker() {
-      if (simScore >= 50) {
-        simScore -= 50;
-        autoClickers++;
-        setInterval(() => {
-          simScore += autoClickers;
-          updateSimScore();
-        }, 1000);
+    function updatePrices() {
+      for (let key in itemPrices) {
+        const span = document.getElementById("price_" + key);
+        if (span) span.textContent = itemPrices[key];
+      }
+    }
+
+    function updateStats() {
+      let output = "<h3>Stats</h3><ul>";
+      for (let key in itemCounts) {
+        const perSec = getItemRate(key);
+        output += `<li>${key}: ${itemCounts[key]} (doing ${perSec}/sec)</li>`;
+      }
+      if (moonCount > 0) {
+        output += `<li>moon: ${moonCount} (doing ${moonCount * 1000}/10sec)</li>`;
+      }
+      output += "</ul>";
+      statsDisplay.innerHTML = output;
+    }
+
+    function getItemRate(type) {
+      switch(type) {
+        case 'autoClicker': return itemCounts[type] * 1;
+        case 'grandma': return itemCounts[type] * 5;
+        case 'human': return itemCounts[type] * 500 / 10;
+        case 'sigma': return itemCounts[type] * 999 * 10;
+        case 'noob': return itemCounts[type] * 99999999999 * 1e11;
+        case 'rocket': return itemCounts[type] * 100;
+        default: return 0;
+      }
+    }
+
+    function buyItem(type, baseCost, increment, interval, isMultiplier = false) {
+      const price = itemPrices[type];
+      if (simScore >= price) {
+        simScore -= price;
+        itemCounts[type]++;
+        itemPrices[type] = Math.floor(price * (type === 'clickMultiplier' ? 1.5 : type === 'rocket' ? 1.5 : 1.1));
         updateSimScore();
-        alert("Auto Clicker added! (" + autoClickers + " total)");
+        updatePrices();
+        updateStats();
+
+        if (isMultiplier) {
+          clickMultiplier *= increment;
+          alert("Click power upgraded to x" + clickMultiplier);
+        } else {
+          setInterval(() => {
+            simScore += increment;
+            updateSimScore();
+          }, interval);
+          alert(type.charAt(0).toUpperCase() + type.slice(1) + " added!");
+        }
       } else {
         alert("Not enough score!");
       }
     }
 
-    function buyGrandma() {
-      if (simScore >= 100) {
-        simScore -= 100;
-        grandmas++;
-        setInterval(() => {
-          simScore += 5 * grandmas;
-          updateSimScore();
-        }, 1000);
+    function buyMoon() {
+      const price = itemPrices.moon;
+      if (simScore >= price) {
+        simScore -= price;
+        moonCount++;
+        itemPrices.moon = Math.floor(price * 1.5);
         updateSimScore();
-        alert("Grandma is baking cookies! (" + grandmas + " total)");
+        updatePrices();
+        updateStats();
+
+        const moon = document.createElement("img");
+        moon.src = "https://i.imgur.com/VKudIGN.jpeg";
+        moon.className = "moon";
+        moon.style.width = "150px";
+        document.body.appendChild(moon);
+
+        setInterval(() => {
+          simScore += 1000 * moonCount;
+          updateSimScore();
+        }, 10000);
       } else {
-        alert("Not enough score!");
+        alert("Not enough score for the moon!");
       }
     }
 
-    function buyClickMultiplier() {
-      if (simScore >= 200) {
-        simScore -= 200;
-        clickMultiplier *= 2;
+    function rebirth() {
+      if (simScore >= 1e150) {
+        simScore = 0;
+        clickMultiplier = 1;
+        rebirths++;
+        rebirthDisplay.textContent = "Rebirths: " + rebirths;
+
+        itemCounts = {
+          autoClicker: 0,
+          grandma: 0,
+          clickMultiplier: 0,
+          human: 0,
+          sigma: 0,
+          noob: 0,
+          rocket: 0
+        };
+
+        itemPrices = {
+          autoClicker: 50,
+          grandma: 100,
+          clickMultiplier: 200,
+          human: 1000,
+          sigma: 100000,
+          noob: 9999999999999999999999999999999999999,
+          rocket: 500,
+          moon: itemPrices.moon // moonCount and price NOT reset
+        };
+
         updateSimScore();
-        alert("Click power doubled! Now " + clickMultiplier + " per click.");
+        updatePrices();
+        updateStats();
+        alert("You have been reborn with power!");
       } else {
-        alert("Not enough score!");
+        alert("Not enough score to rebirth!");
       }
     }
+
+    updatePrices();
+    updateStats();
   </script>
 </body>
 </html>
