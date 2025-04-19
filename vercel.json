@@ -7,13 +7,3 @@
     }
   ]
 }
-
-{
-  "redirects": [
-    {
-      "source": "/Game",
-      "destination": "https://droomer.vercel.app/Game.html",
-      "permanent": true
-    }
-  ]
-}
