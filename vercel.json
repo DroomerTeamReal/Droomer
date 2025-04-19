@@ -22,6 +22,14 @@
     {
       "source": "/Bigrat",
       "destination": "https://bigrat.monster"
+    },
+    {
+      "source": "/Alox",
+      "destination": "https://bigrat.monster"
+    },
+    {
+      "source": "/QuickQuick",
+      "destination": "https://cloudyweb.vercel.app/"
     }
   ]
 }
