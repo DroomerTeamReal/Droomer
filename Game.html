@@ -3,19 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Droomer Game</title>
+  <title>Droomer Game Hub</title>
   <style>
-    body { background: #141414; color: white; font-family: sans-serif; text-align: center; }
-    #gameCanvas { background: #222; margin-top: 20px; border: 2px solid #444; }
+    body { background: #141414; color: white; font-family: sans-serif; margin: 0; }
+    .tabs { display: flex; background: #1f1f1f; }
+    .tab { flex: 1; padding: 15px; cursor: pointer; text-align: center; background: #1f1f1f; border-bottom: 2px solid #444; }
+    .tab.active { background: #2a2a2a; border-bottom: 2px solid lime; }
+    .content { display: none; padding: 20px; }
+    .content.active { display: block; }
+    canvas { background: #222; border: 2px solid #444; }
+
+    /* Click Simulator Styles */
+    #clickSim { text-align: center; }
+    .shop-item { margin-top: 10px; padding: 10px; background: #333; cursor: pointer; border: 1px solid #555; }
   </style>
 </head>
 <body>
-  <h1>Droomer Click Game</h1>
-  <p>Click the square as fast as you can!</p>
-  <canvas id="gameCanvas" width="300" height="300"></canvas>
-  <p id="score">Score: 0</p>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('clickGame')">Spawn Click Game</div>
+    <div class="tab" onclick="switchTab('clickSim')">Click Simulator</div>
+  </div>
+
+  <!-- Click Game -->
+  <div id="clickGame" class="content active">
+    <h2>Droomer Click Game</h2>
+    <p>Click the square as fast as you can!</p>
+    <canvas id="gameCanvas" width="300" height="300"></canvas>
+    <p id="score">Score: 0</p>
+  </div>
+
+  <!-- Click Simulator -->
+  <div id="clickSim" class="content">
+    <h2>Click Simulator</h2>
+    <p>Click the cookie to earn points and buy upgrades!</p>
+    <img src="https://i.imgur.com/5bXgXRF.png" width="150" id="cookie" style="cursor: pointer;" />
+    <p id="simScore">Score: 0</p>
+    <div class="shop-item" onclick="buyUpgrade()">Buy Auto Clicker (Cost: 50)</div>
+  </div>
 
   <script>
+    // Tab system
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      document.querySelectorAll(".content").forEach(content => content.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      event.target.classList.add("active");
+    }
+
+    // --- Spawn Click Game ---
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     let score = 0;
@@ -48,6 +84,36 @@
     });
 
     drawSquare();
+
+    // --- Click Simulator ---
+    let simScore = 0;
+    let autoClickers = 0;
+    const simScoreDisplay = document.getElementById("simScore");
+    const cookie = document.getElementById("cookie");
+
+    cookie.onclick = () => {
+      simScore++;
+      updateSimScore();
+    };
+
+    function buyUpgrade() {
+      if (simScore >= 50) {
+        simScore -= 50;
+        autoClickers++;
+        setInterval(() => {
+          simScore += autoClickers;
+          updateSimScore();
+        }, 1000);
+        updateSimScore();
+        alert("Auto Clicker purchased! Earning " + autoClickers + " per second.");
+      } else {
+        alert("Not enough points!");
+      }
+    }
+
+    function updateSimScore() {
+      simScoreDisplay.textContent = "Score: " + simScore;
+    }
   </script>
 </body>
 </html>
