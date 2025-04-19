@@ -4,11 +4,12 @@
       "source": "/Droomer.rar",
       "destination": "https://files.catbox.moe/rc2db9.rar",
       "permanent": true
-    },
+    }
+  ],
+  "rewrites": [
     {
       "source": "/Game",
-      "destination": "https://droomer.vercel.app/Game.html",
-      "permanent": true
+      "destination": "/Game.html"
     }
   ]
 }
