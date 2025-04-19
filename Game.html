@@ -13,9 +13,13 @@
     .content.active { display: block; }
     canvas { background: #222; border: 2px solid #444; }
 
-    /* Click Simulator Styles */
-    #clickSim { text-align: center; }
-    .shop-item { margin-top: 10px; padding: 10px; background: #333; cursor: pointer; border: 1px solid #555; }
+    .shop-item {
+      margin-top: 10px;
+      padding: 10px;
+      background: #333;
+      cursor: pointer;
+      border: 1px solid #555;
+    }
   </style>
 </head>
 <body>
@@ -27,23 +31,27 @@
 
   <!-- Click Game -->
   <div id="clickGame" class="content active">
-    <h2>Droomer Click Game</h2>
+    <h2>Spawn Click Game</h2>
     <p>Click the square as fast as you can!</p>
     <canvas id="gameCanvas" width="300" height="300"></canvas>
     <p id="score">Score: 0</p>
+    <div class="shop-item" onclick="buyMoreSquares()">Buy More Squares (Cost: 30)</div>
   </div>
 
   <!-- Click Simulator -->
   <div id="clickSim" class="content">
     <h2>Click Simulator</h2>
     <p>Click the cookie to earn points and buy upgrades!</p>
-    <img src="https://img.freepik.com/free-psd/delicious-stack-chocolate-chip-cookies-sweet-treat-bakery-food_632498-50882.jpg?t=st=1745061216~exp=1745064816~hmac=97938fff2fd3c702c23c6bec58e95f3dc4e1f7290cdaa7255b737be99a9b95d3&w=826" width="150" id="cookie" style="cursor: pointer;" />
+    <img src="https://img.freepik.com/free-psd/delicious-stack-chocolate-chip-cookies-sweet-treat-bakery-food_632498-50882.jpg?t=st=1745061216~exp=1745064816~hmac=97938fff2fd3c702c23c6bec58e95f3dc4e1f7290cdaa7255b737be99a9b95d3&w=826"
+         width="200" id="cookie" style="cursor: pointer; border-radius: 10px;" />
     <p id="simScore">Score: 0</p>
-    <div class="shop-item" onclick="buyUpgrade()">Buy Auto Clicker (Cost: 50)</div>
+    <div class="shop-item" onclick="buyAutoClicker()">Buy Auto Clicker (50)</div>
+    <div class="shop-item" onclick="buyGrandma()">Buy Grandma (Cost: 100)</div>
+    <div class="shop-item" onclick="buyClickMultiplier()">Buy Click Multiplier (Cost: 200)</div>
   </div>
 
   <script>
-    // Tab system
+    // Tab System
     function switchTab(tabId) {
       document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
       document.querySelectorAll(".content").forEach(content => content.classList.remove("active"));
@@ -55,48 +63,77 @@
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     let score = 0;
-    let square = { x: 100, y: 100, size: 50 };
+    let squares = [{ x: 100, y: 100, size: 50 }];
+    let squareCount = 1;
 
-    function drawSquare() {
+    function drawSquares() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = "lime";
-      ctx.fillRect(square.x, square.y, square.size, square.size);
+      for (let square of squares) {
+        ctx.fillRect(square.x, square.y, square.size, square.size);
+      }
     }
 
-    function randomizeSquare() {
-      square.x = Math.random() * (canvas.width - square.size);
-      square.y = Math.random() * (canvas.height - square.size);
+    function randomizeSquares() {
+      for (let square of squares) {
+        square.x = Math.random() * (canvas.width - square.size);
+        square.y = Math.random() * (canvas.height - square.size);
+      }
     }
 
     canvas.addEventListener("click", function(e) {
       const rect = canvas.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
-      if (
-        mouseX >= square.x && mouseX <= square.x + square.size &&
-        mouseY >= square.y && mouseY <= square.y + square.size
-      ) {
-        score++;
-        document.getElementById("score").textContent = "Score: " + score;
-        randomizeSquare();
-        drawSquare();
+
+      for (let i = 0; i < squares.length; i++) {
+        const sq = squares[i];
+        if (
+          mouseX >= sq.x && mouseX <= sq.x + sq.size &&
+          mouseY >= sq.y && mouseY <= sq.y + sq.size
+        ) {
+          score++;
+          document.getElementById("score").textContent = "Score: " + score;
+          randomizeSquares();
+          drawSquares();
+          break;
+        }
       }
     });
 
-    drawSquare();
+    function buyMoreSquares() {
+      if (score >= 30) {
+        score -= 30;
+        squares.push({ x: 50, y: 50, size: 50 });
+        squareCount++;
+        alert("You now have " + squareCount + " squares!");
+        drawSquares();
+        document.getElementById("score").textContent = "Score: " + score;
+      } else {
+        alert("Not enough score!");
+      }
+    }
+
+    drawSquares();
 
     // --- Click Simulator ---
     let simScore = 0;
     let autoClickers = 0;
+    let grandmas = 0;
+    let clickMultiplier = 1;
     const simScoreDisplay = document.getElementById("simScore");
     const cookie = document.getElementById("cookie");
 
     cookie.onclick = () => {
-      simScore++;
+      simScore += clickMultiplier;
       updateSimScore();
     };
 
-    function buyUpgrade() {
+    function updateSimScore() {
+      simScoreDisplay.textContent = "Score: " + simScore;
+    }
+
+    function buyAutoClicker() {
       if (simScore >= 50) {
         simScore -= 50;
         autoClickers++;
@@ -105,14 +142,36 @@
           updateSimScore();
         }, 1000);
         updateSimScore();
-        alert("Auto Clicker purchased! Earning " + autoClickers + " per second.");
+        alert("Auto Clicker added! (" + autoClickers + " total)");
       } else {
-        alert("Not enough points!");
+        alert("Not enough score!");
       }
     }
 
-    function updateSimScore() {
-      simScoreDisplay.textContent = "Score: " + simScore;
+    function buyGrandma() {
+      if (simScore >= 100) {
+        simScore -= 100;
+        grandmas++;
+        setInterval(() => {
+          simScore += 5 * grandmas;
+          updateSimScore();
+        }, 1000);
+        updateSimScore();
+        alert("Grandma is baking cookies! (" + grandmas + " total)");
+      } else {
+        alert("Not enough score!");
+      }
+    }
+
+    function buyClickMultiplier() {
+      if (simScore >= 200) {
+        simScore -= 200;
+        clickMultiplier *= 2;
+        updateSimScore();
+        alert("Click power doubled! Now " + clickMultiplier + " per click.");
+      } else {
+        alert("Not enough score!");
+      }
     }
   </script>
 </body>
