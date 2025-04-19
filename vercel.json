@@ -18,6 +18,10 @@
     {
       "source": "/Rat",
       "destination": "https://getrat.vercel.app"
+    },
+    {
+      "source": "/Wave",
+      "destination": "https://getwave.gg"
     }
   ]
 }
