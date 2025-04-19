@@ -12,7 +12,6 @@
     .content { display: none; padding: 20px; }
     .content.active { display: block; }
     canvas { background: #222; border: 2px solid #444; }
-
     .shop-item {
       margin-top: 10px;
       padding: 10px;
@@ -50,7 +49,74 @@
     <div class="shop-item" onclick="buyClickMultiplier()">Buy Click Multiplier (Cost: 200)</div>
   </div>
 
+  <!-- Save/Load Section -->
+  <div style="padding: 20px;">
+    <h3>Save / Load Game</h3>
+    <button onclick="saveGame()">💾 Save Game (.droomer)</button>
+    <input type="file" accept=".droomer" onchange="loadGame(event)">
+  </div>
+
   <script>
+    // Morse Code Conversion
+    const morse = {
+      "0": "-----", "1": ".----", "2": "..---", "3": "...--", "4": "....-",
+      "5": ".....", "6": "-....", "7": "--...", "8": "---..", "9": "----."
+    };
+    const reverseMorse = Object.fromEntries(Object.entries(morse).map(([k, v]) => [v, k]));
+
+    function toMorse(num) {
+      return String(num).split('').map(d => morse[d] || '').join(' ');
+    }
+
+    function fromMorse(morseStr) {
+      return morseStr.trim().split(' ').map(m => reverseMorse[m] || '').join('');
+    }
+
+    function saveGame() {
+      const data = [
+        `!=")!${toMorse(score)}!=")!`,
+        `!=")!${toMorse(simScore)}!=")!`,
+        `!=")!${toMorse(autoClickers)}!=")!`,
+        `!=")!${toMorse(grandmas)}!=")!`,
+        `!=")!${toMorse(clickMultiplier)}!=")!`
+      ].join('\n');
+
+      const blob = new Blob([data], { type: "text/plain" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "DroomerSave.droomer";
+      a.click();
+    }
+
+    function loadGame(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const content = e.target.result;
+        const lines = content.trim().split('\n').map(line =>
+          line.replace(/!="\)!/g, "").trim()
+        );
+
+        try {
+          score = parseInt(fromMorse(lines[0])) || 0;
+          simScore = parseInt(fromMorse(lines[1])) || 0;
+          autoClickers = parseInt(fromMorse(lines[2])) || 0;
+          grandmas = parseInt(fromMorse(lines[3])) || 0;
+          clickMultiplier = parseInt(fromMorse(lines[4])) || 1;
+
+          document.getElementById("score").textContent = "Score: " + score;
+          updateSimScore();
+
+          alert("Game loaded successfully!");
+        } catch {
+          alert("Failed to load game. File may be corrupted.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
     // Tab System
     function switchTab(tabId) {
       document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
