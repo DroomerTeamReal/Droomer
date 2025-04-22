@@ -28,6 +28,10 @@
       "destination": "https://bigrat.monster"
     },
     {
+      "source": "/NoobAnimation",
+      "destination": "https://youtube.com/@Noob_Animationthereal"
+    },
+    {
       "source": "/QuickQuick",
       "destination": "https://cloudyweb.vercel.app/"
     }
