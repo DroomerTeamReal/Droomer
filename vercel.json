@@ -32,6 +32,10 @@
       "destination": "https://youtube.com/@Noob_Animationthereal"
     },
     {
+      "source": "/DroomerMonaco",
+      "destination": "https://droomer.vercel.app/DroomerMonaco.html"
+    },
+    {
       "source": "/QuickQuick",
       "destination": "https://cloudyweb.vercel.app/"
     }
