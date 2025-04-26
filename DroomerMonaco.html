@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monaco Editor - Luau</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs/loader.min.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        #editor {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="editor"></div>
+
+    <script>
+        let editor;
+
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs' } });
+
+        require(['vs/editor/editor.main'], function () {
+            monaco.languages.register({ id: 'luau' });
+
+            monaco.languages.setMonarchTokensProvider('luau', {
+                tokenizer: {
+                    root: [
+                        [/--\[\[/, { token: 'comment', next: '@blockComment' }],
+                        [/--.*/, 'comment'],
+                        [/\"([^"]*)\"/, 'string'],
+                        [/'([^']*)'/, 'string'],
+                        [/\b(local|local\s+function|function|return|if|else|elseif|then|end|for|in|do|while|repeat|until|break|and|or|not)\b/, 'keyword.local'],
+                        [/\b(loadstring|game|print|HttpGet)\b(?=\s*\()/, 'function.call'],
+                        [/[a-zA-Z_][\w]*/, 'identifier'],
+                        [/[\(\)\[\]{}<>]/, 'normal']
+                    ],
+                    blockComment: [
+                        [/\]\]/, { token: 'comment', next: '@pop' }],
+                        [/./, 'comment']
+                    ]
+                }
+            });
+
+            monaco.languages.setLanguageConfiguration('luau', {
+                comments: {
+                    lineComment: '--',
+                    blockComment: ['--[[', ']]']
+                },
+                brackets: [
+                    ['{', '}'],
+                    ['[', ']'],
+                    ['(', ')'],
+                    ['<', '>']
+                ],
+                autoClosingPairs: [
+                    { open: '{', close: '}' },
+                    { open: '[', close: ']' },
+                    { open: '(', close: ')' },
+                    { open: '"', close: '"' },
+                    { open: "'", close: "'" }
+                ]
+            });
+
+            monaco.editor.defineTheme('luauTheme', {
+                base: 'vs-dark',
+                inherit: true,
+                rules: [
+                    { token: 'comment', foreground: '6D7381' },
+                    { token: 'string', foreground: 'ded5ef' },
+                    { token: 'keyword.local', foreground: 'ffb6c1' },
+                    { token: 'function.call', foreground: 'b19cd9' },
+                    { token: 'normal', foreground: 'B0B7C4' }
+                ],
+                colors: {
+                    'editor.foreground': '#FFFFFF',
+                    'editor.background': '#1A1E26',
+                    'editorCursor.foreground': '#6495ed',
+                    'editor.lineHighlightBackground': '#222631',
+                    'editorLineNumber.foreground': '#858585',
+                    'editor.selectionBackground': '#264F78',
+                    'editor.inactiveSelectionBackground': '#3A3D41'
+                }
+            });
+
+            editor = monaco.editor.create(document.getElementById('editor'), {
+                value: `print("Droomer")`,
+                language: 'luau',
+                theme: 'luauTheme',
+                smoothScrolling: true,
+                scrollBeyondLastLine: true,
+                automaticLayout: true,
+                folding: true,
+                dragAndDrop: true,
+                links: true,
+                showFoldingControls: 'always',
+                stopRenderingLineAfter: 6500,
+                cursorBlinking: 'smooth',
+                cursorSmoothCaretAnimation: true,
+                foldingHighlight: true,
+                fontLigatures: true,
+                formatOnPaste: true,
+                showDeprecated: true,
+                suggest: {
+                    snippetsPreventQuickSuggestions: true,
+                },
+                fontSize: 13,
+                contextmenu: false
+            });
+
+            window.addEventListener('contextmenu', function (e) {
+                e.preventDefault();
+                if (window.chrome && window.chrome.webview) {
+                    window.chrome.webview.postMessage('ShowMonacoPanel');
+                }
+            });
+
+            monaco.languages.registerCompletionItemProvider('luau', {
+                provideCompletionItems: () => {
+                    const suggestions = [
+                        { label: 'game', kind: monaco.languages.CompletionItemKind.Variable, insertText: 'game' },
+                        { label: 'loadstring()', kind: monaco.languages.CompletionItemKind.Function, insertText: 'loadstring()' },
+                        { label: 'HttpGet()', kind: monaco.languages.CompletionItemKind.Function, insertText: 'HttpGet()' },
+                        { label: 'local', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'local ' },
+                        { label: 'local function () end', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'local function ()\n\t\nend' },
+                        { label: 'function ()', kind: monaco.languages.CompletionItemKind.Snippet, insertText: 'function ()\n\t\nend' },
+                        { label: 'print("")', kind: monaco.languages.CompletionItemKind.Function, insertText: 'print("")' },
+                        { label: 'printidentity()', kind: monaco.languages.CompletionItemKind.Function, insertText: 'printidentity()' },
+                        { label: '""', kind: monaco.languages.CompletionItemKind.Text, insertText: '""' },
+                        { label: "''", kind: monaco.languages.CompletionItemKind.Text, insertText: "''" },
+                        { label: '()', kind: monaco.languages.CompletionItemKind.Text, insertText: '()' },
+                        { label: '[]', kind: monaco.languages.CompletionItemKind.Text, insertText: '[]' },
+                        { label: '--[[ ]]', kind: monaco.languages.CompletionItemKind.Snippet, insertText: '--[[\n\t\n]]' },
+                        { label: '{}', kind: monaco.languages.CompletionItemKind.Text, insertText: '{}' },
+                        { label: '<>', kind: monaco.languages.CompletionItemKind.Text, insertText: '<>' }
+                    ];
+                    return { suggestions };
+                }
+            });
+
+            window.getText = function () {
+                return editor.getValue();
+            };
+
+            window.setText = function (newText) {
+                editor.setValue(newText);
+            };
+
+            window.clearText = function () {
+                editor.setValue('');
+            };
+        });
+    </script>
+</body>
+</html>
