@@ -4,6 +4,11 @@
       "source": "/Droomer.zip",
       "destination": "https://files.catbox.moe/x8gqtu.rar",
       "permanent": true
+    },
+    {
+      "source": "/DroomerMonaco",
+      "destination": "https://droomer.vercel.app/DroomerMonaco",
+      "permanent": true
     }
   ],
   "rewrites": [
