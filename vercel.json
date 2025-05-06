@@ -5,11 +5,6 @@
       "destination": "https://files.catbox.moe/x8gqtu.rar",
       "permanent": true
     },
-    {
-      "source": "/Key",
-      "destination": "https://droomer.vercel.app/Key.html",
-      "permanent": true
-    }
   ],
   "rewrites": [
     {
