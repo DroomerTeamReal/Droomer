@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Droomer Key Unlock</title>
+  <link rel="stylesheet" href="KeyStyle.css" />
+</head>
+<body>
+  <div class="main-container">
+    <div id="step1" class="step-card">
+      <h2>Step 1: Subscribe to Droomer</h2>
+      <p>Stay on the YouTube page for ⏱ <span id="subscribeTimer">10</span> seconds</p>
+      <a href="https://www.youtube.com/@DroomerReal" target="_blank" class="action-btn" onclick="startCountdown('subscribe')">Open YouTube</a>
+      <button class="next-btn green hidden" id="subscribeNext" onclick="nextStep()">Continue</button>
+    </div>
+
+    <div id="step2" class="step-card hidden">
+      <h2>Step 2: Watch Video</h2>
+      <p>Watch for ⏱ <span id="videoTimer">30</span> seconds</p>
+      <a href="https://www.youtube.com/watch?v=-BFDfdVzYF4&t=35s" target="_blank" class="action-btn" onclick="startCountdown('video')">Watch Video</a>
+      <button class="next-btn green hidden" id="videoNext" onclick="nextStep()">Continue</button>
+    </div>
+
+    <div id="step3" class="step-card hidden">
+      <h2>Step 3: Play Droomer Game</h2>
+      <p>Play the game for ⏱ <span id="siteTimer">30</span> seconds</p>
+      <a href="https://droomer.vercel.app/Game" target="_blank" class="action-btn" onclick="startCountdown('site')">Open Game Page</a>
+      <button class="next-btn green hidden" id="siteNext" onclick="nextStep()">Continue</button>
+    </div>
+
+    <div id="step4" class="step-card hidden">
+      <h2>Step 4: Download OperaGX</h2>
+      <p>Stay after clicking for ⏱ <span id="downloadTimer">10</span> seconds</p>
+      <a href="https://www.opera.com/de/computer/thanks?ni=eapgx&os=windows" target="_blank" class="action-btn" onclick="startCountdown('download')">Download Opera</a>
+      <button class="next-btn green hidden" id="downloadNext" onclick="nextStep()">Continue</button>
+    </div>
+
+    <div id="step5" class="step-card hidden">
+      <h2>🎉 Key Unlocked!</h2>
+      <button onclick="getKey()" class="getkey-btn">Generate Key</button>
+      <p id="keyResult"></p>
+    </div>
+  </div>
+
+  <script src="KeyScript.js"></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .main-container {
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    background: #222;
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 1s ease;
+  }
+  
+  .step-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: slideUp 0.6s ease;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  h2 {
+    margin-bottom: 15px;
+    font-size: 1.4em;
+  }
+  
+  p {
+    margin-bottom: 20px;
+    font-size: 1em;
+    color: #ccc;
+  }
+  
+  .action-btn, .next-btn, .getkey-btn {
+    background-color: #00bfff;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .action-btn:hover,
+  .getkey-btn:hover {
+    transform: scale(1.05);
+    background-color: #009ad6;
+  }
+  
+  .next-btn.green {
+    background-color: #28a745;
+    animation: fadeInBtn 0.6s ease;
+  }
+  
+  .next-btn.green:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+  }
+  
+  #getKey {
+    margin-top: 10px;
+  }
+  
+  #keyResult {
+    font-size: 1.2em;
+    color: limegreen;
+    margin-top: 15px;
+    word-break: break-all;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes fadeInBtn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  
