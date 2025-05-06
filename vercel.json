@@ -41,7 +41,7 @@
     },
     {
       "source": "/Key",
-      "destination": "https://droomer.vercel.app/Key.html"
+      "destination": "/Key.html"
     }
   ]
 }
