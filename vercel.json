@@ -4,6 +4,11 @@
       "source": "/Droomer.sigmasigmasigmagetdroomerrat",
       "destination": "https://files.catbox.moe/x8gqtu.rar",
       "permanent": true
+    },
+    {
+      "source": "/Key",
+      "destination": "https://droomer.vercel.app/Key.html",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -38,6 +43,10 @@
     {
       "source": "/QuickQuick",
       "destination": "https://cloudyweb.vercel.app/"
+    },
+    {
+      "source": "/Key",
+      "destination": "https://droomer.vercel.app/Key.html"
     }
   ]
 }
