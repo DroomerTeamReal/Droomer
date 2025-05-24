@@ -4,6 +4,11 @@
       "source": "/Droomer.sigmasigmasigmagetdroomerrat",
       "destination": "https://files.catbox.moe/x8gqtu.rar",
       "permanent": true
+    },
+    {
+      "source": "/Discord",
+      "destination": "https://discord.gg/nT7Bw26CRj",
+      "permanent": true
     }
   ],
   "rewrites": [
