@@ -1,4 +1,5 @@
--- v3
+-- UI modified and powered by Atlantis Android
+-- v4
 -- | SPDM | Global definitions
 
 local arceus = arceus or nil
