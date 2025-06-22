@@ -1,5 +1,5 @@
 -- UI modified and powered by Atlantis Android
--- v4
+-- v6
 -- | SPDM | Global definitions
 
 local arceus = arceus or nil
@@ -4094,7 +4094,8 @@ do
 			Name = "gui",
 			ResetOnSpawn = false,
 			ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets, -- SPDM Team | Notch-aware UI
-			ZIndexBehavior = Enum.ZIndexBehavior.Global
+			ZIndexBehavior = Enum.ZIndexBehavior.Global,
+			DisplayOrder = 999
 		}, {
 			instanceUtils:Create("Frame", {
 				AnchorPoint = Vector2.new(0.5, 0.5),
@@ -4116,7 +4117,8 @@ do
 			Name = "popups",
 			ResetOnSpawn = false,
 			ScreenInsets = Enum.ScreenInsets.None,
-			ZIndexBehavior = Enum.ZIndexBehavior.Global
+			ZIndexBehavior = Enum.ZIndexBehavior.Global,
+			Display Order = 998
 		});
 
 		gui.Parent = directory;
