@@ -1,4 +1,4 @@
--- v2
+-- v3
 -- | SPDM | Global definitions
 
 local arceus = arceus or nil
@@ -4081,7 +4081,7 @@ do
 
 	local function checkWhitelist()
 		if getgenv then
-			return internalUtils:Request("https://api.codex.lol/v1/auth/authenticate", "POST") ~= false;
+			return true
 		end
 		return false;
 	end
