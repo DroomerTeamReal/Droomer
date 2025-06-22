@@ -1,5 +1,5 @@
 -- UI modified and powered by Atlantis Android
--- v7
+-- v9
 -- | SPDM | Global definitions
 
 local arceus = arceus or nil
@@ -601,7 +601,7 @@ do
 	-- SPDM
 	function utils:Notify(text: string)
 		cloneref(game:GetService("StarterGui")):SetCore("SendNotification", {
-			Title = "Atlantis" .. (isiosdevice() and "iOS" or "Android"),
+			Title = "Atlantis" .. (isiosdevice() and "" or ""),
 			Text = text
 		});
 	end
@@ -4094,7 +4094,8 @@ do
 			Name = "gui",
 			ResetOnSpawn = false,
 			ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets, -- SPDM Team | Notch-aware UI
-			ZIndexBehavior = Enum.ZIndexBehavior.Global
+			ZIndexBehavior = Enum.ZIndexBehavior.Global,
+			DisplayOrder = 999
 		}, {
 			instanceUtils:Create("Frame", {
 				AnchorPoint = Vector2.new(0.5, 0.5),
@@ -4116,7 +4117,8 @@ do
 			Name = "popups",
 			ResetOnSpawn = false,
 			ScreenInsets = Enum.ScreenInsets.None,
-			ZIndexBehavior = Enum.ZIndexBehavior.Global
+			ZIndexBehavior = Enum.ZIndexBehavior.Global,
+			DisplayOrder = 999
 		});
 
 		gui.Parent = directory;
@@ -5306,7 +5308,7 @@ do
 				Name = "credit",
 				Position = UDim2.new(0.5, 0, 0, -28), 
 				Size = UDim2.new(0, 0, 0, 34), 
-				Text = "Powered by Atlantisv6.vercel.app/ScriptHub.html", 
+				Text = "Atlantis V6", 
 				TextColor3 = Color3.fromHex("b2b2b2"), 
 				TextSize = 14
 			}, {
