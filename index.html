@@ -1,592 +1,585 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Droomer Executor</title>
-  <link rel="icon" type="image/png" href="https://i.imgur.com/sV210pe.png" />
-  <meta property="og:title" content="Droomer" />
-  <meta property="og:description" content="Droomer´s Official Website" />
-  <meta property="og:image" content="https://i.imgur.com/rhEaLq4.png" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://droomer.vercel.app/" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="https://i.imgur.com/rhEaLq4.png" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #7d5ba6;
-      --secondary: #8e6bab;
-      --accent: #967bb2;
-      --background: #0a0a0a;
-      --surface: rgba(255, 255, 255, 0.1);
-      --text: #ffffff;
-      --text-secondary: rgba(255, 255, 255, 0.7);
-      --gradient-1: linear-gradient(45deg, #dfa7ff  , #cf7bff);
-      --gradient-2: linear-gradient(45deg, var(--accent), var(--primary));
-      --shadow-1: 0 20px 40px rgba(0, 0, 0, 0.3);
-      --shadow-2: 0 10px 20px rgba(125, 91, 166, 0.2);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
-
-
-    body {
-      background: linear-gradient(135deg, #0a0a0a, #1a1a1a);
-      color: var(--text);
-      overflow-x: none;
-      opacity: 0;
-      animation: fadeIn 2s forwards, blur 1.5s forwards;
-      line-height: 1.6;
-      position: relative;
-    }
-
-    @keyframes blur {
-      0% { filter: blur(9px); }
-      40% { filter: blur(3px); }
-      100% { filter: blur(0); }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    
-    header {
-      width: 100%;
-      position: fixed;
-      background-color: #0a000f21;
-      top: 0;
-      left: 0;
-      z-index: 1100;
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      transition: padding 0.3s, background 0.3s;
-      padding: 1.5rem 2rem;
-    }
-
-    header.scrolled {
-      padding: 1rem 2rem;
-      background: rgba(10, 10, 10, 0.95);
-      box-shadow: 0 4px 30px rgba(0,0,0,0.1);
-    }
-
-    .container {
-      max-width: 1200px;
-      width: 90%;
-      margin: 0 auto;
-    }
-
-    header .content {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 1.9rem;
-      font-weight: 800;
-      background: var(--gradient-1);
-      background-clip: text;
-      color: transparent;
-      position: relative;
-      letter-spacing: -0.5px;
-    }
-
-    nav {
-      display: flex;
-      gap: 1.5rem;
-      align-items: center;
-    }
-
-    nav a {
-      color: var(--text);
-      text-decoration: none;
-      font-size: 1rem;
-      font-weight: 500;
-      padding: 0.6rem 1.2rem;
-      border-radius: 12px;
-      transition: transform 0.4s, background 0.4s;
-      position: relative;
-      letter-spacing: 0.3px;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
-    }
-
-    nav a i {
-      margin-right: 8px;
-      font-size: 1.1em;
-      transition: transform 0.3s ease;
-    }
-
-    nav a:hover i {
-      transform: translateY(-3px);
-    }
-
-    nav a::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--gradient-1);
-      border-radius: 12px;
-      opacity: 0;
-      transition: opacity 0.4s;
-      z-index: -1;
-    }
-
-    nav a:hover {
-      transform: translateY(-2px);
-    }
-
-    nav a:hover::before {
-      opacity: 0.15;
-    }
-
-    #three-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 999999;
-      pointer-events: none;
-    }
-
-    .hero {
-      position: relative;
-      padding-top: 140px;
-      padding-bottom: 6rem;
-      padding-left: 2rem;
-      padding-right: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      z-index: 200;
-    }
-
-    .hero h1 {
-      font-size: 3.8rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-      background: linear-gradient(45deg, #a02bff, #5210bd);
-      color: transparent;
-      background-clip: text;
-      -webkit-background-clip: text;
-      animation: brightnessLoop 5s ease-in-out infinite;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      text-rendering: optimizeLegibility;
-  }
-  
-      
-
-    @keyframes brightnessLoop {
-      0%, 100% { filter: brightness(1); }
-      50% { filter: brightness(1.2); }
-    }
-
-    .hero p {
-      max-width: 700px;
-      margin: 1rem auto 2rem;
-      font-size: 1.3rem;
-      color: var(--text-secondary);
-      line-height: 1.5;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.8rem;
-      padding: 1rem 2rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #fff;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 14px;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.4s, box-shadow 0.4s;
-      text-decoration: none;
-      position: relative;
-      overflow: hidden;
-      letter-spacing: 0.5px;
-      margin-bottom: 2rem;
-    }
-
-    .btn:hover {
-      transform: translateY(2px);
-      box-shadow: var(--shadow-2);
-    }
-
-    .btn span {
-      position: relative;
-      z-index: 1;
-    }
-
-    .btn i {
-      font-size: 1.2em;
-      transition: transform 0.3s ease-out;
-    }
-
-    .btn:hover i {
-      transform: translateX(3px);
-    }
-
-    .ui-preview-container {
-      margin-top: 3rem;
-      max-width: 800px;
-      width: 100%;
-      perspective: 2000px;
-    }
-
-    .ui-preview {
-      width: 100%;
-      border-radius: 24px;
-      box-shadow: var(--shadow-1);
-      transition: transform 0.6s cubic-bezier(0.23,1,0.32,1);
-      transform-style: preserve-3d;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .ui-preview-container:hover .ui-preview {
-      transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y)) scale(1.02);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4),
-                  0 0 30px rgba(125,91,166,0.1);
-    }
-
-    .ui-shape {
-      position: absolute;
-      background: rgba(125, 91, 166, 0.3);
-      filter: blur(200px);
-      border-radius: 4px;
-      z-index: 50;
-      border-radius: 50%;
-    }
-
-    @keyframes shapeflick {
-
-      0% { transform: scale(1);background: rgba(129, 99, 165, 0.3);
-      }
-      50% { transform: scale(1.3); }
-      100% { transform: scale(1);background: rgba(125, 91, 166, 0.3);
-      }
-    }
-
-    .shape1 {
-      animation: shapeflick 8s infinite alternate;
-      width: 900px;
-      height: 300px;
-      top: -50px;
-      left: -100px;
-    }
-
-    .shape2 {
-      width: 300px;
-      height: 300px;
-      left: 100px;
-    }
-    .shape3 {
-      width: 300px;
-      height: 300px;
-      left: 100px;
-      position: sticky;
-    }
-
-
-    .features {
-      padding: 4rem 2rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2.5rem;
-      position: relative;
-      backdrop-filter: blur(50px);
-      border-radius: 20px;
-      background: rgba(255,255,255,0.005);
-    }
-
-    .features::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at center, rgba(125, 91, 166, 0.05), transparent 70%);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .feature-card {
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(10px);
-      border-radius: 16px;
-      padding: 2rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      z-index: 2;
-    }
-    
-    .feature-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-    }
-    
-    .feature-card .icon {
-      font-size: 3rem;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
-    
-    .feature-card h3 {
-      font-size: 1.6rem;
-      background: linear-gradient(45deg, #a02bff, #5210bd);
-      color: transparent;
-      background-clip: text;
-      margin-bottom: 0.5rem;
-      color: var(--text);
-      font-weight: 600;
-    }
-    
-    .feature-card p {
-      font-size: 1rem;
-      color: var(--text-secondary);
-    }
-
-    .editor-section {
-      padding: 4rem 2rem;
-      text-align: center;
-    }
-
-    .editor-container {
-      background: rgba(249, 212, 255, 0.05);
-      backdrop-filter: blur(10px);
-      border-radius: 24px;
-      padding: 2rem;
-      border: 1px solid rgba(255,255,255,0.1);
-      max-width: 1000px;
-      margin: 0 auto;
-      position: relative;
-    }
-
-    .editor-container h2 {
-      font-size: 2rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      background: var(--gradient-2);
-      background-clip: text;
-      color: transparent;
-    }
-
-    .editor-container p {
-      font-size: 1.1rem;
-      color: var(--text-secondary);
-      margin-top: 1rem;
-    }
-
-    iframe {
-      width: 100%;
-      height: 500px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: var(--shadow-1);
-      transition: transform 0.4s;
-      margin-top: 1.5rem;
-    }
-
-    iframe:hover {
-      transform: scale(1.01);
-    }
-
-    footer {
-      padding: 3rem 2rem;
-      background: rgba(10,10,10,0.9);
-      backdrop-filter: blur(20px);
-      text-align: center;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      font-size: 0.9rem;
-      letter-spacing: 0.5px;
-      margin-top: auto;
-    }
-
-    @media (max-width: 768px) {
-      .hero h1 {
-        font-size: 3rem;
-      }
-      .hero p {
-        font-size: 1.2rem;
-      }
-      nav {
-        gap: 1rem;
-      }
-      nav a {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .btn {
-        width: 100%;
-        justify-content: center;
-      }
-  }
-  
-  body::-webkit-scrollbar {
-    display: none;
-  }
-</style>
+    <meta charset="UTF-8">
+    <title>Hula Hoop</title>
+    <link rel="icon" type="image/png" href="https://files.catbox.moe/gfwkkh.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        * { user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; }
+        body { margin:0; padding:0; overflow:hidden; background:#222; font-family:Arial; }
+        #ui {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 360px;
+            z-index: 100;
+            pointer-events: none;
+            text-align: center;
+        }
+        #score {
+            font-size: 28px;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 0 8px #000;
+            margin-bottom: 8px;
+        }
+        #progress-container {
+            width: 100%;
+            height: 22px;
+            background: rgba(0,0,0,0.6);
+            border: 2px solid #fff;
+            border-radius: 11px;
+            overflow: hidden;
+        }
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ffeb3b, #ff9800);
+            transition: width 0.1s ease;
+            box-shadow: 0 0 15px #ffeb3b;
+        }
+        #shop-button {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            z-index: 100;
+            pointer-events: auto;
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            transition: 0.2s;
+            width: 60px; height: 60px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #shop-button:hover {
+            background: #45a049;
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+        }
+        #shop {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 460px;
+            max-height: 80vh;
+            background: rgba(30,30,30,0.98);
+            color: white;
+            display: none;
+            flex-direction: column;
+            z-index: 200;
+            border: 3px solid #ff9800;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+            overflow-y: auto;
+            font-size: 18px;
+            padding: 24px;
+        }
+        #shop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 26px;
+            font-weight: bold;
+            color: #ffeb3b;
+        }
+        #close-shop {
+            background: #ff5252;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            font-size: 22px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #close-shop:hover {
+            background: #f44336;
+            transform: scale(1.1);
+        }
+        .upgrade {
+            background: rgba(255,255,255,0.12);
+            padding: 18px;
+            margin: 12px 0;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.2s;
+            border: 1px solid rgba(255,152,0,0.3);
+        }
+        .upgrade:hover {
+            background: rgba(255,255,255,0.18);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255,152,0,0.2);
+        }
+        .upgrade-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .upgrade-icon {
+            font-size: 36px;
+            color: #ffeb3b;
+        }
+        .upgrade button {
+            background: #ff9800;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .upgrade button:hover:not(:disabled) {
+            background: #f57c00;
+            transform: scale(1.05);
+        }
+        .upgrade button:disabled {
+            background: #666;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        #pause-menu {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.92); color: white;
+            display: none; justify-content: center; align-items: center;
+            z-index: 200; flex-direction: column; font-size: 26px;
+            text-shadow: 0 0 10px #000;
+        }
+        #pause-menu button {
+            margin: 18px; padding: 14px 28px; font-size: 20px;
+            background: #ff6b6b; border: none; color: white;
+            cursor: pointer; border-radius: 10px; transition: 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        #pause-menu button:hover { background: #ff5252; transform: scale(1.05); }
+        #reset-btn {
+            background: #9c27b0 !important;
+        }
+        #reset-btn:hover {
+            background: #7b1fa2 !important;
+        }
+    </style>
 </head>
 <body>
-  <div id="three-container"></div>
-  
-  <div class="ui-shape shape1"></div>
-  <div class="ui-shape shape2"></div>
-  
-  <header id="site-header">
-    <div class="container content">
-      <div class="logo">DroomerTeam</div>
-     <nav>
-  <a href="https://droomer.vercel.app/Droomer.sigmasigmasigmagetdroomerrat">
-    <i class="fas fa-download"></i> Download
-  </a>
-  <a href="https://discord.gg/jjGnb3WxnH">
-    <i class="fas fa-rocket"></i> API
-  </a>
-  <a href="https://discord.gg/bB3qebPdmM" target="_blank">
-    <i class="fab fa-discord"></i> Discord
-  </a>
-</nav>
+<div id="ui">
+    <div id="score">Score: 0</div>
+    <div id="progress-container">
+        <div id="progress-bar"></div>
     </div>
-  </header>
-  
-  <section class="hero">
-    <div class="container">
-      <h1>Experience Next-Gen Execution</h1>
-      <p>Unleash the power of seamless bytecode injection with our advanced bypass technology. Achieve unprecedented performance and security with Droomer Executor.</p>
-      
-      <a class="btn" href="https://droomer.vercel.app/Droomer.sigmasigmasigmagetdroomerrat">
-        <span><i class="fas fa-rocket"></i> Download Now</span>
-      </a>
+</div>
+<button id="shop-button">
+    <span class="material-icons" style="font-size:28px;">shopping_cart</span>
+</button>
+<div id="shop">
+    <div id="shop-header">
+        <span>SHOP</span>
+        <button id="close-shop">X</button>
     </div>
+    <div class="upgrade">
+        <div class="upgrade-info">
+            <span class="material-icons upgrade-icon">timer</span>
+            <div>
+                <strong>Train Speed</strong> Lv. <span id="speed-lv">1</span><br>
+                <small>Hold time: <span id="speed-val">5.0s</span> to Cost: <span id="speed-cost">10</span> pts</small>
+            </div>
+        </div>
+        <button id="speed-upgrade">
+            <span class="material-icons">upgrade</span> Upgrade
+        </button>
     </div>
-  </section>
-  
-  <section class="features container">
-    <div class="feature-card">
-      <div class="icon"><i class="fas fa-bolt"></i></div>
-      <h3>Fast Execution</h3>
-      <p>Experience unparalleled script execution speed with our optimized engine.</p>
+    <div class="upgrade">
+        <div class="upgrade-info">
+            <span class="material-icons upgrade-icon">star</span>
+            <div>
+                <strong>Score per Train</strong> Lv. <span id="score-lv">1</span><br>
+                <small>Points: <span id="score-val">1</span> to Cost: <span id="score-cost">10</span> pts</small>
+            </div>
+        </div>
+        <button id="score-upgrade">
+            <span class="material-icons">upgrade</span> Upgrade
+        </button>
     </div>
-    <div class="feature-card">
-      <div class="icon"><i class="fas fa-shield-alt"></i></div>
-      <h3>Advanced Security</h3>
-      <p>State-of-the-art protection systems keep you safe while maintaining high performance.</p>
-    </div>
-    <div class="feature-card">
-      <div class="icon"><i class="fas fa-magic"></i></div>
-      <h3>Lightning-Fast Injection</h3>
-      <p>Efficient injection technology that operates flawlessly on web versions.</p>
-    </div>
-  </section>
-  
-  <section class="editor-section">
-    <div class="shape3"></div>
-    <div class="editor-container">
-      <h2>Droomer's Custom Editor</h2>
-      <iframe src="https://droomer.vercel.app/DroomerMonaco" title="Droomer's Custom Editor"></iframe>
-      <p>Thanks For @droomer.xyz for converting the monaco in html!</p>
-    </div>
-  </section>
-  
-  <footer>
-    <p>© 2025 Droomer Executor. All rights reserved.</p>
-  </footer>
-  
-  <script>
-    function updateTilt(event) {
-      const container = event.currentTarget;
-      const rect = container.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const rotateX = ((y - centerY) / centerY) * 15;
-      const rotateY = ((x - centerX) / centerX) * 15;
-      const preview = container.querySelector('.ui-preview');
-      if (preview) {
-        preview.style.setProperty('--rotate-x', `${rotateX}deg`);
-        preview.style.setProperty('--rotate-y', `${rotateY}deg`);
-      }
+</div>
+<div id="pause-menu">
+    <div>PAUSED</div>
+    <button id="resume-btn">Resume (SPACE)</button>
+    <button id="reset-btn">RESET ALL DATA</button>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+    const pauseMenu = document.getElementById('pause-menu');
+    const shop = document.getElementById('shop');
+    const shopButton = document.getElementById('shop-button');
+    const closeShopBtn = document.getElementById('close-shop');
+    const clock = new THREE.Clock();
+    const COOKIE_NAME = 'hulaHoopSave';
+    const COOKIE_DAYS = 365;
+    function setCookie(name, value, days) {
+        const d = new Date();
+        d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+        const expires = "expires=" + d.toUTCString();
+        document.cookie = name + "=" + encodeURIComponent(JSON.stringify(value)) + ";" + expires + ";path=/";
     }
-    
-    function resetTilt() {
-      const preview = document.querySelector('.ui-preview');
-      if (preview) {
-        preview.style.setProperty('--rotate-x', '0deg');
-        preview.style.setProperty('--rotate-y', '0deg');
-      }
+    function getCookie(name) {
+        const cname = name + "=";
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const ca = decodedCookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i].trim();
+            if (c.indexOf(cname) === 0) {
+                return JSON.parse(c.substring(cname.length, c.length));
+            }
+        }
+        return null;
     }
-    
-    window.addEventListener('scroll', () => {
-      const header = document.getElementById('site-header');
-      if (window.scrollY > 50) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
+    function deleteCookie(name) {
+        document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+    let baseCost = 5;
+    let speedCost = baseCost;
+    let scoreCost = baseCost;
+    let trainTime = 5000;
+    let pointsPerTrain = 1;
+    let speedLevel = 1;
+    let scoreLevel = 1;
+    let score = 0;
+    let isPaused = false;
+    let isTraining = false;
+    let startTime = 0;
+    let canStartNewTraining = true;
+    const scoreEl = document.getElementById('score');
+    const progBar = document.getElementById('progress-bar');
+    function loadGame() {
+        const save = getCookie(COOKIE_NAME);
+        if (save) {
+            score = save.score || 0;
+            speedLevel = save.speedLevel || 1;
+            scoreLevel = save.scoreLevel || 1;
+            speedCost = save.speedCost || baseCost;
+            scoreCost = save.scoreCost || baseCost;
+            trainTime = Math.max(1000, 5000 - (speedLevel - 1) * 800);
+            pointsPerTrain = scoreLevel;
+        }
+        updateScoreDisplay();
+        updateShopDisplay();
+    }
+    function saveGame() {
+        const saveData = {
+            score: score,
+            speedLevel: speedLevel,
+            scoreLevel: scoreLevel,
+            speedCost: speedCost,
+            scoreCost: scoreCost
+        };
+        setCookie(COOKIE_NAME, saveData, COOKIE_DAYS);
+    }
+    function resetAllData() {
+        deleteCookie(COOKIE_NAME);
+            score = 0;
+            speedLevel = 1;
+            scoreLevel = 1;
+            speedCost = baseCost;
+            scoreCost = baseCost;
+            trainTime = 5000;
+            pointsPerTrain = 1;
+            isTraining = false;
+            canStartNewTraining = true;
+            progBar.style.width = '0%';
+            updateScoreDisplay();
+            updateShopDisplay();
+    }
+    function updateShopDisplay() {
+        document.getElementById('speed-lv').textContent = speedLevel;
+        document.getElementById('speed-val').textContent = (trainTime / 1000).toFixed(1) + 's';
+        document.getElementById('score-lv').textContent = scoreLevel;
+        document.getElementById('score-val').textContent = pointsPerTrain;
+        document.getElementById('speed-cost').textContent = speedCost;
+        document.getElementById('score-cost').textContent = scoreCost;
+        const canSpeed = score >= speedCost;
+        const canScore = score >= scoreCost;
+        document.getElementById('speed-upgrade').disabled = !canSpeed;
+        document.getElementById('score-upgrade').disabled = !canScore;
+    }
+    function upgradeSpeed() {
+        if (score >= speedCost) {
+            score -= speedCost;
+            speedLevel++;
+            trainTime = Math.max(1000, 5000 - (speedLevel - 1) * 800);
+            speedCost = Math.round(speedCost * 1.1);
+            updateScoreDisplay();
+            updateShopDisplay();
+            saveGame();
+        }
+    }
+    function upgradeScore() {
+        if (score >= scoreCost) {
+            score -= scoreCost;
+            scoreLevel++;
+            pointsPerTrain = scoreLevel;
+            scoreCost = Math.round(scoreCost * 1.1);
+            updateScoreDisplay();
+            updateShopDisplay();
+            saveGame();
+        }
+    }
+    function updateScoreDisplay() {
+        scoreEl.textContent = 'Score: ' + score;
+    }
+    function closeShop() {
+        shop.style.display = 'none';
+    }
+    document.getElementById('speed-upgrade').addEventListener('click', upgradeSpeed);
+    document.getElementById('score-upgrade').addEventListener('click', upgradeScore);
+    closeShopBtn.addEventListener('click', closeShop);
+    shopButton.addEventListener('click', () => {
+        shop.style.display = 'flex';
+        updateShopDisplay();
     });
-  </script>
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script>
+    document.getElementById('resume-btn').addEventListener('click', resumeGame);
+    document.getElementById('reset-btn').addEventListener('click', resetAllData);
+    document.addEventListener('keydown', e => {
+        if (isPaused) {
+            if (e.code === 'Space') resumeGame();
+            return;
+        }
+        if (e.code === 'Escape') { togglePause(); return; }
+        if (e.code === 'Space' && !isTraining && canStartNewTraining) {
+            e.preventDefault();
+            isTraining = true;
+            canStartNewTraining = false;
+            startTime = performance.now();
+        }
+    });
+    document.addEventListener('keyup', e => {
+        if (isPaused || e.code !== 'Space') return;
+        isTraining = false;
+        canStartNewTraining = true;
+    });
+    function togglePause() {
+        isPaused = !isPaused;
+        pauseMenu.style.display = isPaused ? 'flex' : 'none';
+        if (!isPaused) renderer.setAnimationLoop(animate);
+    }
+    function resumeGame() { isPaused = false; pauseMenu.style.display = 'none'; renderer.setAnimationLoop(animate); }
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-    camera.position.z = 400;
-    
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById('three-container').appendChild(renderer.domElement);
-    
-    const particleCount = 500;
-    const positions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount * 3; i++) {
-      positions[i] = (Math.random() - 0.5) * 800;
-    }
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    
-    const material = new THREE.PointsMaterial({
-      color: 0x8e6bab,
-      size: 2,
-      opacity: 0.5,
-      transparent: true
+    scene.fog = new THREE.FogExp2(0x333333, 0.03);
+    const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 1000);
+    camera.position.set(0, 1.6, 0);
+    scene.add(camera);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    document.body.appendChild(renderer.domElement);
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    const sun = new THREE.DirectionalLight(0xffffff, 0.9);
+    sun.position.set(5, 10, 5);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(2048, 2048);
+    sun.shadow.camera.near = 0.5;
+    sun.shadow.camera.far = 30;
+    sun.shadow.camera.left = sun.shadow.camera.bottom = -15;
+    sun.shadow.camera.right = sun.shadow.camera.top = 15;
+    scene.add(sun);
+    let roomModel;
+    const loader = new THREE.GLTFLoader();
+    loader.load(
+        'RoomModel.glb',
+        (gltf) => {
+            roomModel = gltf.scene;
+            const box = new THREE.Box3().setFromObject(roomModel);
+            const size = box.getSize(new THREE.Vector3());
+            const center = box.getCenter(new THREE.Vector3());
+            roomModel.position.sub(center);
+            roomModel.position.y += -box.min.y;
+            const maxDim = Math.max(size.x, size.z);
+            const scale = 18 / maxDim;
+            roomModel.scale.set(scale, scale, scale);
+            roomModel.position.y = 0;
+            roomModel.traverse(child => {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                    if (child.material) {
+                        child.material = new THREE.MeshLambertMaterial({
+                            color: child.material.color,
+                            map: child.material.map || null
+                        });
+                    }
+                }
+            });
+            scene.add(roomModel);
+        },
+        undefined,
+        () => {
+            const floor = new THREE.Mesh(
+                new THREE.PlaneGeometry(20, 20),
+                new THREE.MeshLambertMaterial({ color: 0x8b5e3c })
+            );
+            floor.rotation.x = -Math.PI/2;
+            floor.receiveShadow = true;
+            scene.add(floor);
+        }
+    );
+    const hoopGeometry = new THREE.TorusGeometry(0.8, 0.06, 32, 128);
+    const hoopMaterial = new THREE.MeshPhongMaterial({
+        color: 0xff3366,
+        emissive: 0x660022,
+        shininess: 100,
+        specular: 0x444444
     });
-    
-    const particles = new THREE.Points(geometry, material);
-    scene.add(particles);
-    
-    function animate() {
-      requestAnimationFrame(animate);
-      particles.rotation.x += 0.0005;
-      particles.rotation.y += 0.001;
-      renderer.render(scene, camera);
+    const hoop = new THREE.Mesh(hoopGeometry, hoopMaterial);
+    hoop.position.set(0, 1.2, -0.5);
+    hoop.rotation.x = Math.PI/2;
+    hoop.castShadow = true;
+    scene.add(hoop);
+    const glowRing = new THREE.Mesh(
+        new THREE.RingGeometry(0.75, 0.85, 64),
+        new THREE.MeshBasicMaterial({ color: 0xff88aa, side: THREE.DoubleSide, transparent: true, opacity: 0.3 })
+    );
+    glowRing.position.copy(hoop.position);
+    glowRing.rotation.x = Math.PI/2;
+    scene.add(glowRing);
+    const handGeometry = new THREE.SphereGeometry(0.12, 16, 16);
+    handGeometry.scale(1.2, 0.8, 1.5);
+    const handMaterial = new THREE.MeshPhongMaterial({
+        color: 0xf4a460,
+        shininess: 30
+    });
+    const leftHand = new THREE.Mesh(handGeometry, handMaterial);
+    leftHand.position.set(-0.9, 1.2, -0.5);
+    leftHand.castShadow = true;
+    scene.add(leftHand);
+    const rightHand = new THREE.Mesh(handGeometry, handMaterial);
+    rightHand.position.set(0.9, 1.2, -0.5);
+    rightHand.castShadow = true;
+    scene.add(rightHand);
+    function addFinger(parent, x, y, z, rotX = 0, rotZ = 0) {
+        const finger = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.03, 0.03, 0.15),
+            handMaterial
+        );
+        finger.position.set(x, y, z);
+        finger.rotation.set(rotX, 0, rotZ);
+        parent.add(finger);
     }
-    animate();
-    
+    addFinger(leftHand, -0.05, -0.08, -0.02, -0.3, 0.1);
+    addFinger(leftHand, -0.02, -0.09, -0.01, -0.4, 0.05);
+    addFinger(leftHand, 0.01, -0.09, -0.01, -0.4, 0);
+    addFinger(leftHand, 0.04, -0.08, -0.02, -0.3, -0.1);
+    addFinger(rightHand, 0.05, -0.08, -0.02, -0.3, -0.1);
+    addFinger(rightHand, 0.02, -0.09, -0.01, -0.4, -0.05);
+    addFinger(rightHand, -0.01, -0.09, -0.01, -0.4, 0);
+    addFinger(rightHand, -0.04, -0.08, -0.02, -0.3, 0.1);
+       
+    const audioLoader = new THREE.AudioLoader();
+    const listener = new THREE.AudioListener();
+    camera.add(listener);
+    const scoreSound = new THREE.Audio(listener);
+    audioLoader.load(
+        'https://files.catbox.moe/r73815.mp3',
+        (buffer) => {
+            scoreSound.setBuffer(buffer);
+            scoreSound.setVolume(0.6);
+        },
+        undefined,
+        (error) => console.error('Sound load error:', error)
+    );
     window.addEventListener('resize', () => {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
+        camera.aspect = innerWidth / innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(innerWidth, innerHeight);
     });
-  </script>
+    
+    // === ENHANCED CAMERA BOBBING WITH EXTRA TRAINING INTENSITY ===
+    let bobTime = 0;
+    const idleBobAmplitude = 0.025;      // Gentle idle breathing
+    const idleBobFrequency = 1.4;        // Slow idle bob
+    const trainingBobAmplitude = 0.025;  // More intense during training
+    const trainingBobFrequency = 1.4;    // Much faster during training
+    const trainingExtraBobFrequency = 1.4; // EXTRA high-frequency shake for effort
+    const trainingExtraBobAmplitude = 0.012;
+    // === END CAMERA BOBBING VARIABLES ===
+              
+    function animate() {
+        const delta = Math.min(clock.getDelta(), 0.1);
+        const time = clock.getElapsedTime();
+        if (!isPaused) {
+            hoop.rotation.z += (isTraining ? 10 : 2) * delta;
+            glowRing.scale.setScalar(1 + Math.sin(time * 8) * 0.05 * (isTraining ? 1 : 0.3));
+            const sway = isTraining ? Math.sin(time * 12) * 0.07 : Math.sin(time * 3) * 0.02;
+            const grip = isTraining ? 0.14 : 0.06;
+            leftHand.position.x = -0.9 + sway + grip;
+            rightHand.position.x = 0.9 - sway - grip;
+            leftHand.rotation.z = sway * 2;
+            rightHand.rotation.z = -sway * 2;
+
+            // === ENHANCED CAMERA BOBBING WITH TRAINING EXTRA ===
+            if (isTraining) {
+                // Primary training bob (medium intensity)
+                bobTime += delta * 8.2;
+                let bobOffset = Math.sin(bobTime * trainingBobFrequency) * trainingBobAmplitude;
+                
+                // EXTRA high-frequency shake (effort/trembling feel)
+                const extraShake = Math.sin(bobTime * trainingExtraBobFrequency) * trainingExtraBobAmplitude;
+                bobOffset += extraShake;
+                
+                camera.position.y = 1.6 + bobOffset;
+            } else {
+                // Idle breathing
+                bobTime += delta * 1.1;
+                const bobOffset = Math.sin(bobTime * idleBobFrequency) * idleBobAmplitude;
+                camera.position.y = 1.6 + bobOffset;
+            }
+            // === END ENHANCED CAMERA BOBBING ===
+
+            if (isTraining) {
+                const elapsed = performance.now() - startTime;
+                const p = Math.min(elapsed / trainTime, 1);
+                progBar.style.width = (p * 100) + '%';
+                if (elapsed >= trainTime) {
+                    score += pointsPerTrain;
+                    updateScoreDisplay();
+                    progBar.style.width = '0%';
+                    if (scoreSound.isPlaying) scoreSound.stop();
+                    scoreSound.play();
+                    hoopMaterial.emissive.setHex(0xff3366);
+                    setTimeout(() => hoopMaterial.emissive.setHex(0x660022), 200);
+                    isTraining = false;
+                    canStartNewTraining = true;
+                    updateShopDisplay();
+                    saveGame();
+                }
+            } else {
+                progBar.style.width = '0%';
+            }
+        }
+        renderer.render(scene, camera);
+    }
+                              
+    loadGame();
+    renderer.setAnimationLoop(animate);
+</script>
 </body>
 </html>
